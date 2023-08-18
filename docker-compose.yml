@@ -1,0 +1,106 @@
+version: "4"
+services:
+  python:
+    build:
+      context: .
+      dockerfile: Dockerfile.python
+    networks:
+      - python_network
+    restart: on-failure
+    ports:
+      - "8000:8000"
+
+  kafka:
+    build:
+      context: .
+      dockerfile: Dockerfile.kafka
+    ports:
+      - "9092:9092"
+    networks:
+      - kafka_network
+    restart: on-failure
+
+  redpanda-0:
+    build: 
+      context: .
+      dockerfile: Dockerfile.redpanda
+    ports: 
+      #- "8080:8080"
+      - "18081:18081"
+      - "18082:18082"
+      - "19092:19092"
+      - "19644:9644"
+    networks:
+      - redpanda_network
+    restart: on-failure
+    environment:
+      CONFIG_FILEPATH: /tmp/config.yml
+    #depends_on:
+    #  - kafka   
+    
+
+  telegraf-prometheus:
+    build:
+      context: .
+      dockerfile: Dockerfile.telegraf_prometheus
+    networks:
+      - python_network
+      - monitoring_network
+    restart: on-failure  
+    depends_on:
+      - python
+
+  telegraf-victoria:
+    build:
+      context: .
+      dockerfile: Dockerfile.telegraf_victoria
+    networks:
+      - python_network
+      - monitoring_network
+    restart: on-failure
+    depends_on:
+      - victoria 
+      - kafka
+
+  victoria:
+    build:
+      context: .
+      dockerfile: Dockerfile.victoria
+    ports: 
+      - "8428:8428"
+    networks:
+      - monitoring_network
+    restart: on-failure 
+    depends_on:
+      - kafka 
+    volumes:
+      - vmdata:/storage
+    command:
+      - "--storageDataPath=/storage"
+
+  grafana:
+    build:
+      context: .
+      dockerfile: Dockerfile.grafana
+    ports: 
+      - "3000:3000"
+    networks:
+      - monitoring_network 
+    restart: on-failure
+    depends_on:
+      - victoria   
+
+volumes:
+  vmdata:      
+
+networks:
+  python_network:
+  kafka_network:
+  redpanda_network:
+    driver: bridge
+  monitoring_network:
+
+  
+
+
+

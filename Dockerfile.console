@@ -1,0 +1,5 @@
+FROM docker.redpanda.com/redapndadata/console:v2.2.4
+
+COPY config.yml /tmp/config.yml
+
+ENTRYPOINT ["/bin/sh", "-c", "/app/console"]

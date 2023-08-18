@@ -1,0 +1,9 @@
+FROM telegraf:1.20
+
+RUN apt-get update && apt-get install -y curl
+
+RUN rm /etc/telegraf/telegraf.conf
+
+COPY telegraf_prometheus.conf /etc/telegraf/telegraf.conf 
+
+ENTRYPOINT ["telegraf"]

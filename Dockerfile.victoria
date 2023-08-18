@@ -1,0 +1,7 @@
+FROM victoriametrics/victoria-metrics
+
+ENV DATABASE_NAME=victoria_db
+
+CMD ["-storageDataPath", "/victoria-metrics-data", "-retentionPeriod", "30d", "-influx.databaseNames", "victoria_db"]
+
+EXPOSE 8428

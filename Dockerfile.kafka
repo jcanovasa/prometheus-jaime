@@ -1,0 +1,11 @@
+FROM docker.io/bitnami/kafka:3.4
+
+ENV ALLOW_PLAINTEXT_LISTENER=yes
+
+ENV KAFKA_KRAFT_CLUSTER_ID=ZDFiZmU3ODUyMzRiNGI3NG
+
+ENV KAFKA_ADVERTISED_HOST_NAME=kafka:9092
+
+COPY server.properties /opt/bitnami/kafka/config/server.properties
+
+EXPOSE 9092

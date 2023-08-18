@@ -1,0 +1,5 @@
+FROM docker.redpanda.com/redpandadata/redpanda:v23.1.9
+
+COPY redpanda.conf /etc/redpanda/redpanda.conf
+
+CMD ["redpanda", "start", "--config", "/etc/redpanda/redpanda.conf"]
